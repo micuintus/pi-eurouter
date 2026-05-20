@@ -10,7 +10,9 @@
     "url": "git+https://github.com/micuintus/pi-eurouter.git"
   },
   "scripts": {
-    "typecheck": "tsc -p tsconfig.json"
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "prepare": "npm run build"
   },
   "peerDependencies": {
     "@earendil-works/pi-coding-agent": "*",
@@ -22,7 +24,11 @@
   },
   "pi": {
     "extensions": [
-      "./src/index.ts"
+      "./dist/index.js"
     ]
-  }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ]
 }

@@ -17,13 +17,13 @@ import { PROVIDER_NAME, PROVIDER_DISPLAY_NAME } from "./constants.js";
 import { fetchEurouterModels } from "./discovery.js";
 
 export default async function (pi: ExtensionAPI) {
-	console.log(`[${PROVIDER_NAME}] Discovering models...`);
+	console.log(`[${PROVIDER_NAME}] Extension loading...`);
 
 	let models;
 	try {
 		models = await fetchEurouterModels();
 	} catch (error) {
-		console.warn(`[${PROVIDER_NAME}] Failed to fetch models:`, error);
+		console.error(`[${PROVIDER_NAME}] FAILED to fetch models:`, error);
 		return;
 	}
 
@@ -32,7 +32,7 @@ export default async function (pi: ExtensionAPI) {
 		return;
 	}
 
-	console.log(`[${PROVIDER_NAME}] Registered ${models.length} models.`);
+	console.log(`[${PROVIDER_NAME}] Registering ${models.length} models.`);
 
 	pi.registerProvider(PROVIDER_NAME, {
 		name: PROVIDER_DISPLAY_NAME,
@@ -42,4 +42,6 @@ export default async function (pi: ExtensionAPI) {
 		authHeader: true,
 		models,
 	});
+
+	console.log(`[${PROVIDER_NAME}] Provider registered. Models should now be available.`);
 }

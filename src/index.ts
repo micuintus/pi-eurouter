@@ -90,23 +90,16 @@ async function fetchEurouterModels() {
 }
 
 export default async function (pi) {
-	console.log(`[${PROVIDER_NAME}] Extension loading...`);
-
 	let models;
 	try {
 		models = await fetchEurouterModels();
-		console.log(`[${PROVIDER_NAME}] Fetched ${models.length} models from API.`);
-	} catch (error) {
-		console.warn(`[${PROVIDER_NAME}] API fetch failed (${error.message}), using fallback.`);
+	} catch {
 		models = FALLBACK_MODELS;
 	}
 
 	if (models.length === 0) {
-		console.warn(`[${PROVIDER_NAME}] No models available, using fallback.`);
 		models = FALLBACK_MODELS;
 	}
-
-	console.log(`[${PROVIDER_NAME}] Registering ${models.length} models.`);
 
 	pi.registerProvider(PROVIDER_NAME, {
 		name: PROVIDER_DISPLAY_NAME,
@@ -116,6 +109,4 @@ export default async function (pi) {
 		authHeader: true,
 		models,
 	});
-
-	console.log(`[${PROVIDER_NAME}] Provider registered.`);
 }

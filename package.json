@@ -1,0 +1,28 @@
+{
+  "name": "pi-eurouter",
+  "version": "0.1.0",
+  "description": "EUrouter provider extension for pi coding agent. Adds /login support and runtime model discovery.",
+  "type": "module",
+  "keywords": ["pi-package", "pi-extension", "eurouter", "provider"],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/micuintus/pi-eurouter.git"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "peerDependencies": {
+    "@earendil-works/pi-coding-agent": "*",
+    "@earendil-works/pi-ai": "*"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "typescript": "^5.8.0"
+  },
+  "pi": {
+    "extensions": [
+      "./src/index.ts"
+    ]
+  }
+}

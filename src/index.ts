@@ -3,7 +3,7 @@
  *
  * Adds EUrouter (api.eurouter.ai) as a pi provider with:
  * - Runtime model discovery from /api/v1/models (no auth required)
- * - Pseudo-OAuth /login support for API key storage
+ * - Native API key /login support (no pseudo-OAuth needed)
  * - OpenAI-compatible chat completions transport (reuses pi built-in)
  *
  * Usage:

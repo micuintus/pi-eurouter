@@ -1,45 +1,32 @@
-# pi-eurouter
+pi-eurouter: EUrouter provider for pi
 
-EUrouter provider for [pi](https://pi.dev).
+Install:
+  # From npm (recommended)
+  pi install npm:pi-eurouter
 
-**Install:**
+  # From GitHub
+  pi install git:github.com/micuintus/pi-eurouter
 
-```bash
-pi install npm:pi-eurouter
-```
+Login:
+  /login
+  Use an API key
+  Select EUrouter
+  Paste eur_... key
 
-**Login:**
+Use:
+  /model
+  Select model under eurouter provider
 
-```
-/login
-Use an API key -> EUrouter
-```
+Details:
+  - 127 models from api.eurouter.ai/api/v1/models (live)
+  - Fallback: deepseek-v3, claude-sonnet-4-5 (if API unreachable)
+  - Transport: openai-compat (built-in)
+  - Zero imports, self-contained src/index.ts
 
-Paste your `eur_...` key.
+Dev:
+  git clone https://github.com/micuintus/pi-eurouter
+  cd pi-eurouter
+  npm install
+  npm run typecheck
 
-**Use:**
-
-```
-/model
-```
-
-Pick any EUrouter model.
-
-## How it works
-
-127 models from `api.eurouter.ai/api/v1/models`. Fallback to 2 hardcoded models if the API is down.
-
-Uses pi's built-in `openai-completions` transport. No custom streaming code.
-
-## Dev
-
-```bash
-git clone https://github.com/micuintus/pi-eurouter
-cd pi-eurouter
-npm install
-npm run typecheck
-```
-
-## License
-
-MIT
+License: MIT

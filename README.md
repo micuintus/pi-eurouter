@@ -20,17 +20,23 @@ Sign up at [eurouter.ai](https://www.eurouter.ai) and create an API key.
 
 ### 2. Install the extension
 
+**From GitHub:**
+
+```bash
+pi install git:github.com/micuintus/pi-eurouter
+```
+
+**From npm (after publishing):**
+
+```bash
+pi install npm:pi-eurouter
+```
+
+For local development:
+
 ```bash
 cd pi-eurouter
 pi install .
-```
-
-Or as a local path in `settings.json`:
-
-```json
-{
-  "extensions": ["/path/to/pi-eurouter/src/index.ts"]
-}
 ```
 
 ### 3. /login

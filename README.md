@@ -1,32 +1,47 @@
-pi-eurouter: EUrouter provider for pi
+# pi-eurouter
 
-Install:
-  # From npm (recommended)
-  pi install npm:pi-eurouter
+EUrouter provider extension for [pi](https://pi.dev).
 
-  # From GitHub
-  pi install git:github.com/micuintus/pi-eurouter
+## Install
 
-Login:
-  /login
-  Use an API key
-  Select EUrouter
-  Paste eur_... key
+### From npm (recommended)
+```bash
+pi install npm:pi-eurouter
+```
 
-Use:
-  /model
-  Select model under eurouter provider
+### From GitHub
+```bash
+pi install git:github.com/micuintus/pi-eurouter
+```
 
-Details:
-  - 127 models from api.eurouter.ai/api/v1/models (live)
-  - Fallback: deepseek-v3, claude-sonnet-4-5 (if API unreachable)
-  - Transport: openai-compat (built-in)
-  - Zero imports, self-contained src/index.ts
+## Login
 
-Dev:
-  git clone https://github.com/micuintus/pi-eurouter
-  cd pi-eurouter
-  npm install
-  npm run typecheck
+Run `/login` in pi:
+1. Choose **"Use an API key"**
+2. Select **"EUrouter"**
+3. Paste your `eur_...` API key
 
-License: MIT
+## Use
+
+Run `/model` in pi and select any model under the **eurouter** provider.
+
+## Details
+
+- **127 models** fetched live from `api.eurouter.ai/api/v1/models`
+- **Fallback models**: `deepseek-v3`, `claude-sonnet-4-5` (if API unreachable)
+- **Transport**: `openai-compat` (uses pi's built-in provider)
+- **Zero imports**: Self-contained `src/index.ts` for jiti compatibility
+- **No console spam**: Silent operation (debug logging removed)
+
+## Development
+
+```bash
+git clone https://github.com/micuintus/pi-eurouter
+cd pi-eurouter
+npm install
+npm run typecheck
+```
+
+## License
+
+MIT

@@ -85,7 +85,7 @@ async function fetchEurouterModels() {
 	const data = await res.json();
 	const rawModels = data.data ?? [];
 	return rawModels
-		.filter((m) => m.supported_api_endpoints?.includes("/chat/completions"))
+		.filter((m) => m.supported_api_endpoints?.some((e) => e === "chat.completions" || e === "messages" || e === "responses"))
 		.map(toPiModel);
 }
 

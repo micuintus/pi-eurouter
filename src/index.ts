@@ -1,11 +1,3 @@
-/**
- * pi-eurouter — EUrouter provider extension for pi
- *
- * Zero-dependency, self-contained. Discovers models at startup from
- * EUrouter's public /api/v1/models endpoint. Falls back to a hardcoded
- * model list if the API is unreachable.
- */
-
 const PROVIDER_NAME = "eurouter";
 const PROVIDER_DISPLAY_NAME = "EUrouter";
 const BASE_URL = "https://api.eurouter.ai/api/v1";
@@ -13,44 +5,74 @@ const MODELS_ENDPOINT = `${BASE_URL}/models`;
 const DEFAULT_CONTEXT_WINDOW = 131072;
 const DEFAULT_MAX_TOKENS = 16384;
 
-const FALLBACK_MODELS = [
+type EurouterModel = {
+	id: string;
+	name?: string;
+	context_length?: number;
+	top_provider?: { max_completion_tokens?: number };
+	architecture?: { input_modalities?: string[] };
+	supported_parameters?: string[];
+	supported_api_endpoints?: string[];
+	pricing?: Record<string, string | number | undefined>;
+};
+
+type PiModel = {
+	id: string;
+	name: string;
+	reasoning: boolean;
+	input: Array<"text" | "image">;
+	cost: { input: number; output: number; cacheRead: number; cacheWrite: number };
+	contextWindow: number;
+	maxTokens: number;
+	compat?: { maxTokensField?: "max_completion_tokens" | "max_tokens" };
+};
+
+type Pi = {
+	registerProvider(
+		name: string,
+		config: {
+			name: string;
+			baseUrl: string;
+			api: string;
+			apiKey: string;
+			authHeader: boolean;
+			models: PiModel[];
+		},
+	): void;
+};
+
+const FALLBACK_MODELS: PiModel[] = [
 	{
-		id: "deepseek-v3",
-		name: "DeepSeek V3",
-		api: "openai-completions",
-		provider: PROVIDER_NAME,
-		baseUrl: BASE_URL,
+		id: "kimi-2.6",
+		name: "Kimi 2.6",
 		reasoning: false,
 		input: ["text"],
-		cost: { input: 0.5, output: 1.5, cacheRead: 0, cacheWrite: 0 },
-		contextWindow: 128000,
-		maxTokens: 16384,
+		cost: { input: 0.5, output: 2, cacheRead: 0, cacheWrite: 0 },
+		contextWindow: 256000,
+		maxTokens: 32768,
 		compat: { maxTokensField: "max_tokens" },
 	},
 	{
-		id: "claude-sonnet-4-5",
-		name: "Claude Sonnet 4.5",
-		api: "openai-completions",
-		provider: PROVIDER_NAME,
-		baseUrl: BASE_URL,
-		reasoning: true,
+		id: "mistral-large",
+		name: "Mistral Large",
+		reasoning: false,
 		input: ["text", "image"],
-		cost: { input: 3, output: 15, cacheRead: 0.3, cacheWrite: 3.75 },
-		contextWindow: 200000,
-		maxTokens: 64000,
+		cost: { input: 2, output: 6, cacheRead: 0, cacheWrite: 0 },
+		contextWindow: 128000,
+		maxTokens: 32768,
 		compat: { maxTokensField: "max_tokens" },
 	},
 ];
 
-function parseCost(raw) {
-	const n = parseFloat(raw || "0");
+function parseCost(raw: string | number | undefined): number {
+	const n = parseFloat(String(raw || "0"));
 	return isNaN(n) ? 0 : n * 1_000_000;
 }
 
-function toPiModel(raw) {
+function toPiModel(raw: EurouterModel): PiModel {
 	const ctx = raw.context_length ?? DEFAULT_CONTEXT_WINDOW;
 	const maxOut = raw.top_provider?.max_completion_tokens ?? DEFAULT_MAX_TOKENS;
-	const input = ["text"];
+	const input: Array<"text" | "image"> = ["text"];
 	if (
 		raw.architecture?.input_modalities?.includes("image") ||
 		raw.supported_parameters?.includes("image_input")
@@ -60,9 +82,6 @@ function toPiModel(raw) {
 	return {
 		id: raw.id,
 		name: raw.name || raw.id,
-		api: "openai-completions",
-		provider: PROVIDER_NAME,
-		baseUrl: BASE_URL,
 		reasoning: raw.supported_parameters?.includes("reasoning") ?? false,
 		input,
 		cost: {
@@ -77,20 +96,24 @@ function toPiModel(raw) {
 	};
 }
 
-async function fetchEurouterModels() {
+async function fetchEurouterModels(): Promise<PiModel[]> {
 	const res = await fetch(MODELS_ENDPOINT, { signal: AbortSignal.timeout(5000) });
 	if (!res.ok) {
 		throw new Error(`${res.status}: ${res.statusText}`);
 	}
-	const data = await res.json();
-	const rawModels = data.data ?? [];
+	const payload = (await res.json()) as { data?: EurouterModel[] } | null;
+	const rawModels = payload?.data ?? [];
 	return rawModels
-		.filter((m) => m.supported_api_endpoints?.some((e) => e === "chat.completions" || e === "messages" || e === "responses"))
+		.filter((m) =>
+			m.supported_api_endpoints?.some(
+				(e) => e === "chat.completions" || e === "messages" || e === "responses",
+			),
+		)
 		.map(toPiModel);
 }
 
-export default async function (pi) {
-	let models;
+export default async function (pi: Pi) {
+	let models: PiModel[];
 	try {
 		models = await fetchEurouterModels();
 	} catch {

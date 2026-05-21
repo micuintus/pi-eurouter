@@ -117,6 +117,7 @@ export default async function (pi: Pi) {
 	try {
 		models = await fetchEurouterModels();
 	} catch {
+		console.warn("EUrouter: API unreachable, using fallback models");
 		models = FALLBACK_MODELS;
 	}
 

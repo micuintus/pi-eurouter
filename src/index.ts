@@ -47,7 +47,7 @@ const FALLBACK_MODELS: PiModel[] = [
 		id: "kimi-2.6",
 		name: "Kimi 2.6",
 		reasoning: true,
-		thinkingLevelMap: { xhigh: "high" },
+		thinkingLevelMap: { minimal: "low", xhigh: "high" },
 		input: ["text"],
 		cost: { input: 0.5, output: 2, cacheRead: 0, cacheWrite: 0 },
 		contextWindow: 256000,
@@ -87,7 +87,7 @@ function toPiModel(raw: EurouterModel): PiModel {
 		id: raw.id,
 		name: raw.name || raw.id,
 		reasoning,
-		thinkingLevelMap: reasoning ? { xhigh: "high" } : undefined,
+		thinkingLevelMap: reasoning ? { minimal: "low", xhigh: "high" } : undefined,
 		input,
 		cost: {
 			input: parseCost(raw.pricing?.prompt),

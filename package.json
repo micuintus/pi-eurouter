@@ -1,6 +1,6 @@
 {
   "name": "pi-eurouter",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "EUrouter provider for pi. 127 models via API, fallback if offline.",
   "type": "module",
   "main": "src/index.ts",

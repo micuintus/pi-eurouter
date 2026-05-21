@@ -1,6 +1,6 @@
 # pi-eurouter 🇪🇺
 
-[EUrouter](https://eurouter.ai) provider extension for [pi](https://pi.dev) (EUrouter)
+[EUrouter](https://eurouter.ai) provider extension for [pi](https://pi.dev)
 
 ## Install
 

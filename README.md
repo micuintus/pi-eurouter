@@ -1,6 +1,6 @@
-# pi-eurouter
+# pi-eurouter 🇪🇺
 
-EUrouter provider extension for [pi](https://pi.dev).
+[EUrouter](https://eurouter.ai) provider extension for [pi](https://pi.dev) (EUrouter)
 
 ## Install
 
@@ -24,14 +24,6 @@ Run `/login` in pi:
 ## Use
 
 Run `/model` in pi and select any model under the **eurouter** provider.
-
-## Details
-
-- **127 models** fetched live from `api.eurouter.ai/api/v1/models`
-- **Fallback models**: `deepseek-v3`, `claude-sonnet-4-5` (if API unreachable)
-- **Transport**: `openai-compat` (uses pi's built-in provider)
-- **Zero imports**: Self-contained `src/index.ts` for jiti compatibility
-- **No console spam**: Silent operation (debug logging removed)
 
 ## Development
 

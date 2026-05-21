@@ -44,24 +44,24 @@ type Pi = {
 
 const FALLBACK_MODELS: PiModel[] = [
 	{
-		id: "kimi-2.6",
-		name: "Kimi 2.6",
+		id: "kimi-k2.6",
+		name: "Kimi K2.6",
 		reasoning: true,
 		thinkingLevelMap: { minimal: "low", xhigh: "high" },
-		input: ["text"],
-		cost: { input: 0.5, output: 2, cacheRead: 0, cacheWrite: 0 },
+		input: ["text", "image"],
+		cost: { input: 0.8, output: 3.5, cacheRead: 0.2, cacheWrite: 0 },
 		contextWindow: 256000,
-		maxTokens: 32768,
+		maxTokens: 256000,
 		compat: { maxTokensField: "max_tokens" },
 	},
 	{
-		id: "mistral-large",
-		name: "Mistral Large",
+		id: "deepseek-v3",
+		name: "DeepSeek V3",
 		reasoning: false,
-		input: ["text", "image"],
-		cost: { input: 2, output: 6, cacheRead: 0, cacheWrite: 0 },
-		contextWindow: 128000,
-		maxTokens: 32768,
+		input: ["text"],
+		cost: { input: 0.3, output: 1, cacheRead: 0, cacheWrite: 0 },
+		contextWindow: 163840,
+		maxTokens: 8192,
 		compat: { maxTokensField: "max_tokens" },
 	},
 ];
@@ -82,7 +82,7 @@ function toPiModel(raw: EurouterModel): PiModel {
 		input.push("image");
 	}
 	const params = raw.supported_parameters ?? [];
-	const reasoning = params.includes("reasoning") || params.includes("reasoning_effort");
+	const reasoning = params.includes("reasoning_effort");
 	return {
 		id: raw.id,
 		name: raw.name || raw.id,

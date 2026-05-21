@@ -13,7 +13,12 @@ type EurouterModel = {
 	architecture?: { input_modalities?: string[] };
 	supported_parameters?: string[];
 	supported_api_endpoints?: string[];
-	pricing?: Record<string, string | number | undefined>;
+	pricing?: {
+		prompt?: string | number;
+		completion?: string | number;
+		input_cache_read?: string | number;
+		input_cache_write?: string | number;
+	};
 };
 
 type PiModel = {
@@ -24,7 +29,7 @@ type PiModel = {
 	cost: { input: number; output: number; cacheRead: number; cacheWrite: number };
 	contextWindow: number;
 	maxTokens: number;
-	thinkingLevelMap?: Partial<Record<string, string | null>>;
+	thinkingLevelMap?: Partial<Record<"minimal" | "low" | "medium" | "high" | "xhigh", string | null>>;
 	compat?: { maxTokensField?: "max_completion_tokens" | "max_tokens" };
 };
 
@@ -68,7 +73,7 @@ const FALLBACK_MODELS: PiModel[] = [
 
 function parseCost(raw: string | number | undefined): number {
 	const n = parseFloat(String(raw || "0"));
-	return isNaN(n) ? 0 : n * 1_000_000;
+	return isNaN(n) || n < 0 ? 0 : n * 1_000_000;
 }
 
 function toPiModel(raw: EurouterModel): PiModel {
@@ -107,14 +112,16 @@ async function fetchEurouterModels(): Promise<PiModel[]> {
 		throw new Error(`${res.status}: ${res.statusText}`);
 	}
 	const payload = (await res.json()) as { data?: EurouterModel[] } | null;
-	const rawModels = payload?.data ?? [];
+	const rawModels = Array.isArray(payload?.data) ? payload.data : [];
 	return rawModels
+		.filter((m) => m.id)
 		.filter((m) =>
 			m.supported_api_endpoints?.some(
 				(e) => e === "chat.completions" || e === "messages" || e === "responses",
 			),
 		)
-		.map(toPiModel);
+		.map(toPiModel)
+		.sort((a, b) => a.name.localeCompare(b.name));
 }
 
 export default async function (pi: Pi) {
@@ -127,6 +134,7 @@ export default async function (pi: Pi) {
 	}
 
 	if (models.length === 0) {
+		console.warn("EUrouter: API returned no models, using fallback");
 		models = FALLBACK_MODELS;
 	}
 

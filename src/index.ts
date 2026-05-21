@@ -24,6 +24,7 @@ type PiModel = {
 	cost: { input: number; output: number; cacheRead: number; cacheWrite: number };
 	contextWindow: number;
 	maxTokens: number;
+	thinkingLevelMap?: Partial<Record<string, string | null>>;
 	compat?: { maxTokensField?: "max_completion_tokens" | "max_tokens" };
 };
 
@@ -45,7 +46,8 @@ const FALLBACK_MODELS: PiModel[] = [
 	{
 		id: "kimi-2.6",
 		name: "Kimi 2.6",
-		reasoning: false,
+		reasoning: true,
+		thinkingLevelMap: { xhigh: "high" },
 		input: ["text"],
 		cost: { input: 0.5, output: 2, cacheRead: 0, cacheWrite: 0 },
 		contextWindow: 256000,
@@ -79,10 +81,13 @@ function toPiModel(raw: EurouterModel): PiModel {
 	) {
 		input.push("image");
 	}
+	const params = raw.supported_parameters ?? [];
+	const reasoning = params.includes("reasoning") || params.includes("reasoning_effort");
 	return {
 		id: raw.id,
 		name: raw.name || raw.id,
-		reasoning: raw.supported_parameters?.includes("reasoning") ?? false,
+		reasoning,
+		thinkingLevelMap: reasoning ? { xhigh: "high" } : undefined,
 		input,
 		cost: {
 			input: parseCost(raw.pricing?.prompt),

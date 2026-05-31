@@ -142,7 +142,7 @@ export default async function (pi: Pi) {
 		name: PROVIDER_DISPLAY_NAME,
 		baseUrl: BASE_URL,
 		api: "openai-completions",
-		apiKey: "EUROUTER_API_KEY",
+		apiKey: "$EUROUTER_API_KEY",
 		authHeader: true,
 		models,
 	});
